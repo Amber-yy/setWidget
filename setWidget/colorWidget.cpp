@@ -92,6 +92,13 @@ void colorWidget::apply()
 	close();
 }
 
+void colorWidget::showEvent(QShowEvent *e)
+{
+	colors[0] =first;
+	colors[1] = second;
+	colors[2] = third;
+}
+
 bool colorWidget::eventFilter(QObject *obj, QEvent *event)
 {
 	if (event->type() != QEvent::Paint)

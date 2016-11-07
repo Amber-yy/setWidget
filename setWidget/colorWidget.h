@@ -33,6 +33,7 @@ signals:
 	void colorApply();
 protected:
 	void apply();
+	virtual void showEvent(QShowEvent *)override;
 	virtual bool eventFilter(QObject *, QEvent *)override;
 	QColor colors[3];
 	QPushButton *firstBt;
