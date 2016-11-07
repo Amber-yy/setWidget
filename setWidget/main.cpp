@@ -1,10 +1,11 @@
 #include "setwidget.h"
-#include <QtWidgets/QApplication>
+#include <QApplication>
 
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
-	setWidget w;
+	setWidget w(600,430);
+
 	w.show();
 	return a.exec();
 }
