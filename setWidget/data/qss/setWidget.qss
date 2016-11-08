@@ -201,7 +201,6 @@ QComboBox:!editable, QComboBox::drop-down:editable
      background: white
 }
 
-  
 QComboBox:!editable:on, QComboBox::drop-down:editable:on 
 {
     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,

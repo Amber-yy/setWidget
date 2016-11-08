@@ -67,3 +67,13 @@ struct deskLrc
 	windowLrc::fontType type;
 	int pixelSize;
 };
+
+struct networkSet
+{
+	QString address;
+	QString port;
+	QString userName;
+	QString passWord;
+	int proxyType;
+	int resultNum;
+};

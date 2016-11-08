@@ -16,6 +16,7 @@ class QFrame;
 class QCheckBox;
 class QComboBox;
 class colorWidget;
+class QSpinBox;
 
 class setWidget : public tranWidget
 {
@@ -28,6 +29,7 @@ protected:
 	hotKeys hotkeys;
 	windowLrc windowlrc;
 	deskLrc desklrc;
+	networkSet network;
 	QColor tempUnplay, tempPlayed;
 	QColor deTempUnplay[3], deTempPlayed[3];
 	QMap<int, QString> allKeys;
@@ -64,6 +66,8 @@ signals:
 	void resetWindowLrc(windowLrc &);
 signals:
 	void resetDeskLrc(deskLrc &);
+signals:
+	void resetNetwork(networkSet &);
 protected:
 	void routeChange();
 	void applyChange();
@@ -76,10 +80,12 @@ protected:
 	void readGeneral();
 	void readWindowLrc();
 	void readDeskLrc();
+	void readNetwork();
 	void saveGeneral();
 	void saveHotKey();
 	void saveWindowLrc();
 	void saveDeskLrc();
+	void saveNetwork();
 protected:
 	virtual bool eventFilter(QObject *, QEvent *)override;
 	virtual void paintEvent(QPaintEvent *)override;
@@ -102,6 +108,10 @@ protected:
 	QLineEdit *passwordEdit;
 	QComboBox *typeBox;
 	QFrame *proxyLine;
+	QLabel *searchLa;
+	QFrame *searchLine;
+	QLabel *resultNum;
+	QSpinBox *maxNum;
 protected:
 	QLabel *destyleSetLa;
 	QLabel *defontLa;

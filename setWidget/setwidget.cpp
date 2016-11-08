@@ -13,6 +13,7 @@
 #include <QFileDialog>
 #include <QEvent>
 #include <QKeyEvent>
+#include <QSpinBox>
 
 #include "colorWidget.h"
 
@@ -29,7 +30,6 @@ setWidget::setWidget(int w, int h, QWidget *parent) : tranWidget(w, h, parent), 
 		 readConfig();
 		 connectSignal();
 		 setColor(QColor(255, 255, 255, 255));
-
 	}
 	catch (std::bad_alloc &)
 	{
@@ -44,6 +44,7 @@ setWidget::~setWidget()
 	//saveHotKey();
 	//saveWindowLrc();
 	//saveDeskLrc();
+	//saveNetwork();
 }
 
 bool setWidget::eventFilter(QObject *obj, QEvent *event)
@@ -156,7 +157,13 @@ bool setWidget::eventFilter(QObject *obj, QEvent *event)
 		}
 		else if (widget == advanceWidget)
 		{
+			typeBox->setCurrentIndex(network.proxyType);
+			addrEdit->setText(network.address);
+			portEdit->setText(network.port);
+			userEdit->setText(network.userName);
+			passwordEdit->setText(network.passWord);
 
+			maxNum->setValue(network.resultNum);
 		}
 
 	}
@@ -286,6 +293,11 @@ void setWidget::createSubCom()
 	passwordEdit = new QLineEdit(advanceWidget);
 	typeBox = new QComboBox(advanceWidget);
 	proxyLine = new QFrame(advanceWidget);
+
+	searchLa = new QLabel(u8"搜索设置", advanceWidget);
+	searchLine=new QFrame(advanceWidget);
+	resultNum = new QLabel(u8"搜索结果数", advanceWidget);
+	maxNum = new QSpinBox(advanceWidget);
 
 	palette = new paletteWidget(526, 288, 0);
 	palette->hide();
@@ -423,6 +435,11 @@ void setWidget::setGeo()
 	typeBox->setGeometry(80, 40, 115, 20);
 	proxyLine->setGeometry(60, 10, 310, 16);
 
+	searchLa->setGeometry(10, 150, 50, 16);
+	searchLine->setGeometry(60, 150, 310, 16);
+	resultNum->setGeometry(10, 190, 60, 16); 
+	maxNum->setGeometry(80, 186, 60, 25);
+
 }
 
 void setWidget::readConfig()
@@ -445,6 +462,7 @@ void setWidget::readConfig()
 	destyleFrame->setFrameShape(QFrame::HLine);
 	deviewFrame->setFrameShape(QFrame::HLine);
 	proxyLine->setFrameShape(QFrame::HLine);
+	searchLine->setFrameShape(QFrame::HLine);
 
 	windowLrcWidget->hide();
 	desktopLrcWidget->hide();
@@ -502,6 +520,7 @@ void setWidget::readConfig()
 	//readHotKey();
 	//readWindowLrc();
 	readDeskLrc();
+	readNetwork();
 }
 
 void setWidget::hotKeyTextChange(const QString &str)
@@ -681,6 +700,26 @@ void setWidget::readDeskLrc()
 	resetDeskView();
 }
 
+void setWidget::readNetwork()
+{
+	QSettings gs("data/setWidget.ini", QSettings::IniFormat);
+
+	network.proxyType = gs.value("NetworkSet/proxyType").toInt();
+	network.address = gs.value("NetworkSet/address").toString();
+	network.port = gs.value("NetworkSet/port").toString();
+	network.userName = gs.value("NetworkSet/userName").toString();
+	network.passWord = gs.value("NetworkSet/passWord").toString();
+	network.resultNum = gs.value("NetworkSet/resultNum").toInt();
+
+	typeBox->setCurrentIndex(network.proxyType);
+	addrEdit->setText(network.address);
+	portEdit->setText(network.port);
+	userEdit->setText(network.userName);
+	passwordEdit->setText(network.passWord);
+
+	maxNum->setValue(network.resultNum);
+}
+
 void setWidget::saveWindowLrc()
 {
 	QSettings gs("data/setWidget.ini", QSettings::IniFormat);
@@ -719,6 +758,19 @@ void setWidget::saveDeskLrc()
 
 	gs.setValue("DeskLrc/deFontType", QString::number(desklrc.type));
 	gs.setValue("DeskLrc/dePixelSize", QString::number(desklrc.pixelSize));
+}
+
+void setWidget::saveNetwork()
+{
+	QSettings gs("data/setWidget.ini", QSettings::IniFormat);
+
+	gs.setValue("NetworkSet/proxyType",QString::number(network.proxyType));
+	gs.setValue("NetworkSet/address",network.address);
+	gs.setValue("NetworkSet/port",network.port);
+	gs.setValue("NetworkSet/userName",network.userName);
+	gs.setValue("NetworkSet/passWord",network.passWord);
+	gs.setValue("NetworkSet/resultNum",QString::number(network.resultNum));
+
 }
 
 void setWidget::saveGeneral()
@@ -997,6 +1049,18 @@ void setWidget::applyChange()
 
 		emit resetDeskLrc(desklrc);
 	}
+	else if (currentWidget == advanceWidget)
+	{
+		network.address = addrEdit->text();
+		network.passWord = passwordEdit->text();
+		network.port = portEdit->text();
+		network.proxyType = typeBox->currentIndex();
+		network.userName = userEdit->text();
+		network.resultNum = maxNum->value();
+
+		emit resetNetwork(network);
+	}
+
 
 }
 
